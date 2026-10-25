@@ -130,3 +130,17 @@ function registerStudent(
     return `${student.name} registered successfully. ID: ${student.id}`;
 }
 
+// 7. this: an object method uses its own properties.
+const studentTools = {
+    describe: function () {
+        return `${this.name} - ${this.course}`;
+    }
+};
+
+
+// 8. Higher-order function: accept another function.
+function runWithCallback(student, callback) {
+    callback(student);
+}
+
+
