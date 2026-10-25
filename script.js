@@ -84,4 +84,49 @@ function determineStatus(average) {
     return average >= config.passingMark ? "PASS" : "FAIL";
 }
 
+// 6. Register a student.
+// Default parameters supply the course when it is undefined.
+// Rest parameters allow any number of marks.
+function registerStudent(
+    name,
+    course = config.defaultCourse,
+    ...marks
+) {
+    if (typeof name !== "string" || name.trim() === "") {
+        return "Please enter a valid student name.";
+    }
+
+    if (typeof course !== "string" || course.trim() === "") {
+        return "Please enter a valid course.";
+    }
+
+    const invalidMarks = marks.some(mark =>
+        typeof mark !== "number" ||
+        !Number.isFinite(mark) ||
+        mark < 0 ||
+        mark > 100
+    );
+
+    if (invalidMarks) {
+        return "Marks must be numbers between 0 and 100.";
+    }
+
+    // Use the generator's next() method to get an ID.
+    const id = studentIds.next().value;
+
+    // Spread syntax copies the marks into a new array.
+    const student = {
+        id: id,
+        name: name.trim(),
+        course: course.trim(),
+        marks: [...marks],
+        average: averageFunction(...marks),
+        status: determineStatus(averageFunction(...marks)),
+        processed: false
+    };
+
+    students.push(student);
+
+    return `${student.name} registered successfully. ID: ${student.id}`;
+}
 
