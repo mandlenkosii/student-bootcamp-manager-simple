@@ -143,4 +143,44 @@ function runWithCallback(student, callback) {
     callback(student);
 }
 
+// 9. Display students in the HTML table.
+function displayStudents() {
+    const table = document.getElementById("studentTable");
+    table.innerHTML = "";
+
+    students.forEach(student => {
+        const row = table.insertRow();
+
+        // Use call() to set this to the current student.
+        const describeStudent = studentTools.describe.call(student);
+
+        const values = [
+            student.id,
+            student.name,
+            student.course,
+            student.marks.length ? student.marks.join(", ") : "No marks",
+            student.average === null ? "N/A" : student.average,
+            student.status
+        ];
+
+        values.forEach((value, index) => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+
+            if (index === 1) {
+                cell.title = describeStudent;
+            }
+
+            if (index === 5) {
+                if (student.status === "PASS") {
+                    cell.className = "pass";
+                } else if (student.status === "FAIL") {
+                    cell.className = "fail";
+                } else {
+                    cell.className = "no-marks";
+                }
+            }
+        });
+    });
+}
 
