@@ -1,0 +1,105 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Bootcamp Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Student Bootcamp Manager</h1>
+        <p>Manage students, marks and bootcamp performance.</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Register a Student</h2>
+
+            <form id="studentForm">
+                <label for="studentName">Student name</label>
+                <input id="studentName" type="text"
+                    placeholder="Enter student name" required>
+
+                <label for="course">Course</label>
+                <input id="course" type="text"
+                    placeholder="Leave blank for default course">
+
+                <label for="marks">Marks</label>
+                <input id="marks" type="text"
+                    placeholder="Example: 75, 80, 65">
+
+                <p class="hint">Enter marks separated by commas. Marks are from 0 to 100. Leave blank for no marks.</p>
+
+                <button type="submit">Register Student</button>
+            </form>
+
+            <p id="message" role="status"></p>
+        </section>
+
+        <section class="card">
+            <h2>Class Summary</h2>
+
+            <div class="summary">
+                <div>
+                    <span>Total Students</span>
+                    <strong id="totalStudents">0</strong>
+                </div>
+                <div>
+                    <span>Processed</span>
+                    <strong id="processedStudents">0</strong>
+                </div>
+                <div>
+                    <span>Passed</span>
+                    <strong id="passedStudents">0</strong>
+                </div>
+                <div>
+                    <span>Failed</span>
+                    <strong id="failedStudents">0</strong>
+                </div>
+            </div>
+
+            <button id="processButton" type="button">
+                Process Students
+            </button>
+
+            <button id="reportButton" type="button" class="secondary">
+                Generate Final Report
+            </button>
+
+            <p id="processingMessage" role="status"></p>
+        </section>
+
+        <section class="card">
+            <h2>Registered Students</h2>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Marks</th>
+                            <th>Average</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Final Report</h2>
+            <pre id="finalReport">Click "Generate Final Report" to display the report.</pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>Melsoft Academy | Student Bootcamp Manager</p>
+    </footer>
+</body>
+</html>
