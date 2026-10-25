@@ -387,3 +387,9 @@ const studentDescription = studentTools.describe.bind({
 
 console.log(studentDescription());
 
+
+// Show the initial student list.
+displayStudents();
+updateSummary();
+
+console.log("Student Bootcamp Manager is ready.");
