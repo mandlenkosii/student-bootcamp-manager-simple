@@ -11,7 +11,7 @@ yield, next(), setTimeout() and asynchronous processing.
 */
 
 
-// 1. IIFE: protect the application configuration.
+/*1. IIFE: protect the application configuration.
 const config = (function () {
     const bootcampName = "Melsoft Academy";
     const passingMark = 50;
@@ -392,4 +392,166 @@ console.log(studentDescription());
 displayStudents();
 updateSummary();
 
-console.log("Student Bootcamp Manager is ready.");
+console.log("Student Bootcamp Manager is ready.");*/
+
+
+const manager = window.StudentManager;
+
+// Register the student using the form.
+document.getElementById("studentForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const name = document.getElementById("studentName").value;
+    const courseText = document.getElementById("course").value.trim();
+    const marksText = document.getElementById("marks").value.trim();
+    const message = document.getElementById("message");
+
+    // Convert comma-separated marks into numbers.
+    let marks = [];
+
+    if (marksText !== "") {
+        const parts = marksText.split(",");
+
+        if (parts.some(part => part.trim() === "")) {
+            message.textContent = "Please enter valid comma-separated marks.";
+            return;
+        }
+
+        marks = parts.map(part => Number(part.trim()));
+    }
+
+    try {
+        const course = courseText || undefined;
+
+        // Spread syntax passes each mark as a separate argument.
+        const student = manager.registerStudent(name, course, ...marks);
+
+        message.textContent = `${student.name} registered successfully.`;
+        document.getElementById("studentForm").reset();
+
+        displayStudents();
+        updateSummary();
+    } catch (error) {
+        message.textContent = error.message;
+    }
+});
+
+
+// Display all students in the table.
+function displayStudents() {
+    const table = document.getElementById("studentTable");
+    table.innerHTML = "";
+
+    manager.students.forEach(student => {
+        const row = table.insertRow();
+
+        const values = [
+            student.id,
+            student.name,
+            student.course,
+            student.marks.length ? student.marks.join(", ") : "No marks",
+            student.average ?? "N/A",
+            student.status
+        ];
+
+        values.forEach((value, index) => {
+            const cell = row.insertCell();
+            cell.textContent = value;
+
+            if (index === 5) {
+                cell.className =
+                    student.status === "PASS" ? "pass" :
+                    student.status === "FAIL" ? "fail" : "no-marks";
+            }
+        });
+    });
+}
+
+
+// Update class statistics.
+function updateSummary() {
+    const report = manager.generateReport();
+
+    document.getElementById("totalStudents").textContent =
+        report.totalStudents;
+
+    document.getElementById("processedStudents").textContent =
+        report.processedStudents;
+
+    document.getElementById("passedStudents").textContent =
+        report.passedStudents;
+
+    document.getElementById("failedStudents").textContent =
+        report.failedStudents;
+}
+
+
+// Process students asynchronously.
+document.getElementById("processButton").addEventListener("click", async () => {
+    const message = document.getElementById("processingMessage");
+    const button = document.getElementById("processButton");
+
+    if (manager.students.length === 0) {
+        message.textContent = "Register students before processing.";
+        return;
+    }
+
+    button.disabled = true;
+    message.textContent = "Processing students...";
+
+    console.log("Processing started.");
+    console.log("Other JavaScript instructions can run while waiting.");
+
+    try {
+        await manager.processStudents(() => {
+            console.log("All students have been processed.");
+        });
+
+        message.textContent = "All students have been processed.";
+        displayStudents();
+        updateSummary();
+    } finally {
+        button.disabled = false;
+    }
+});
+
+
+// Generate the final report.
+document.getElementById("reportButton").addEventListener("click", () => {
+    const report = manager.generateReport();
+
+    let output = `${report.bootcampName} - STUDENT REPORT\n`;
+    output += `Passing mark: ${report.passingMark}\n`;
+    output += "========================================\n";
+
+    report.students.forEach(student => {
+        output += `ID: ${student.id}\n`;
+        output += `Name: ${student.name}\n`;
+        output += `Course: ${student.course}\n`;
+        output += `Marks: ${student.marks.length ? student.marks.join(", ") : "No marks"}\n`;
+        output += `Average: ${student.average ?? "N/A"}\n`;
+        output += `Status: ${student.status}\n`;
+        output += `Processed: ${student.processed ? "Yes" : "No"}\n`;
+        output += "----------------------------------------\n";
+    });
+
+    output += `Total students: ${report.totalStudents}\n`;
+    output += `Students processed: ${report.processedStudents}\n`;
+    output += `Students passed: ${report.passedStudents}\n`;
+    output += `Students failed: ${report.failedStudents}\n`;
+    output += `Students without marks: ${report.studentsWithoutMarks}\n`;
+
+    document.getElementById("finalReport").textContent = output;
+});
+
+
+// Register the five sample students.
+manager.registerStudent("Thando Mokoena", "JavaScript Development", 75, 80, 65);
+manager.registerStudent("Lerato Nkosi", "Web Development", 45, 40, 48);
+manager.registerStudent("Sipho Dlamini", "JavaScript Development", 90, 85, 95);
+manager.registerStudent("Amahle Khumalo", undefined, 55, 60);
+manager.registerStudent("Neo Molefe", "Software Development", 30, 45, 35, 40);
+
+// Show the sample data.
+displayStudents();
+updateSummary();
